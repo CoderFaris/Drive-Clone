@@ -1,2 +1,5 @@
+[build.environment]
+  NODE_VERSION = "20.12.2"  # or "18.20.5"
+
 [build]
-  command = "npm install -g pnpm@10.2.1 && pnpm install && pnpm run build"
+  command = "pnpm install && pnpm run build"
