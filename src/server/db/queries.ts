@@ -7,13 +7,13 @@ import { eq } from "drizzle-orm"
 export const QUERIES = {
     getFiles : function(folderId: number) {
 
-        return db.select().from(filesSchema).where(eq(filesSchema.parent, folderId))
+        return db.select().from(filesSchema).where(eq(filesSchema.parent, folderId)).orderBy(filesSchema.id)
     
     },
 
     getFolders : function(folderId: number) {
     
-        return db.select().from(foldersSchema).where(eq(foldersSchema.parent, folderId))
+        return db.select().from(foldersSchema).where(eq(foldersSchema.parent, folderId)).orderBy(foldersSchema.id)
         
     },
 
