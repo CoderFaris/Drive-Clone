@@ -4,8 +4,7 @@ import { Button } from "~/components/ui/button";
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-black via-neutral-900 to-neutral-800 p-4 text-white">
-      <main className="text-center">
+    <>
         <h1 className="mb-4 bg-gradient-to-r from-neutral-200 to-neutral-400 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
           DriveV2
         </h1>
@@ -30,10 +29,10 @@ export default function HomePage() {
             Get Started
           </Button>
         </form>
-      </main>
+      
       <footer className="mt-16 text-sm text-neutral-500">
         © {new Date().getFullYear()} DriveV2. All rights reserved.
       </footer>
-    </div>
+    </>
   );
 }
