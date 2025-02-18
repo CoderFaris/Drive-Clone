@@ -1,5 +1,7 @@
+import { auth } from '@clerk/nextjs/server';
 import DriveContents from './drive-contents'
 import { QUERIES } from "~/server/db/queries";
+import { redirect } from 'next/navigation';
 
 export default async function GoogleDriveClone(props: {
     params: Promise<{folderId: string}>
@@ -9,11 +11,25 @@ export default async function GoogleDriveClone(props: {
   
   const parsedFolderId = parseInt(params.folderId)
 
+  const user = await auth()
+
+  if (!user.userId) {
+    return redirect("/sign-in")
+  }
+
   if (isNaN(parsedFolderId)) {
     return <div>Invalid folder ID</div>
   }
 
+  const folder = await QUERIES.getFolderById(parsedFolderId)
 
+  if(!folder) {
+    return <div>Create new folder</div>
+  }
+
+  if (folder.ownerId !== user.userId) {
+    return redirect('/drive');
+  }
 
   const filesPromise = QUERIES.getFiles(parsedFolderId)
   const foldersPromise = QUERIES.getFolders(parsedFolderId)
