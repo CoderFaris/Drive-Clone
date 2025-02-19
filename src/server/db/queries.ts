@@ -1,9 +1,8 @@
-import "server-only"
+import "server-only";
 
 import { db } from "~/server/db"
 import { files_table as filesSchema, folders_table as foldersSchema } from "~/server/db/schema"
 import { eq, and, isNull } from "drizzle-orm"
-import { root } from ".eslintrc.cjs"
 
 export const QUERIES = {
     getFiles : function(folderId: number) {
@@ -76,6 +75,18 @@ export const MUTATIONS = {
             ownerId: input.userId,
         })
 
+    },
+     
+    createFolder : async function(input: {folder : {
+        name: string,
+        parent: number;
+    },
+        userId: string;
+    }) {
+        return await db.insert(foldersSchema).values({
+            ...input.folder,
+            ownerId : input.userId
+        })
     },
 
     onboardUser : async function(userId : string) {

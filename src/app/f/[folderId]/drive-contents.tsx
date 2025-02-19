@@ -1,22 +1,37 @@
 "use client"
 
-import { Upload, ChevronRight } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import { FileRow, FolderRow } from "./file-row"
 import type { files_table, folders_table } from "~/server/db/schema"
 import Link from "next/link"
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { UploadButton } from "~/components/uploadthing"
 import { useRouter } from "next/navigation" // this one is for app router, next/router is for pages
+import { Button } from "~/components/ui/button"
+import { createFolder } from "~/server/actions";
 
 export default function DriveContents(props:{
   files: typeof files_table.$inferSelect[];
   folders: typeof folders_table.$inferSelect[];
   parents: typeof folders_table.$inferSelect[];
-  currentFolderId: number
+  currentFolderId: number;
+  currUser : string
 }) {
   
   const navigate = useRouter();
-
+  
+  const handleCreateFolder = async () => {
+    const folderName = prompt('Enter a name for the folder:');
+    if (folderName) {
+      try {
+        const result = await createFolder(folderName, props.currentFolderId, props.currUser)
+        console.log(result)
+      } catch (error) {
+        console.error('Error creating folder:', error);
+     }
+    }
+    
+  }
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
       <div className="max-w-6xl mx-auto">
@@ -28,7 +43,7 @@ export default function DriveContents(props:{
             >
               My Drive
             </Link>
-            {props.parents.map((folder, index) => (
+            {props.parents.map((folder) => (
               <div key={folder.id} className="flex items-center">
                 <ChevronRight className="mx-2 text-gray-500" size={16} />
                 <Link
@@ -67,10 +82,12 @@ export default function DriveContents(props:{
             ))}
           </ul>
         </div>
+        
         <UploadButton endpoint="driveUploader" onClientUploadComplete={()=>{
           navigate.refresh()
           
         }} input={{folderId: props.currentFolderId}}></UploadButton>
+        <Button variant={"secondary"} onClick={handleCreateFolder} aria-label="Create folder">Create Folder</Button>
       </div>
     </div>
   )

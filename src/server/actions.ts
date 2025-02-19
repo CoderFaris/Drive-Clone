@@ -6,8 +6,19 @@ import { files_table, folders_table } from "./db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { UTApi } from "uploadthing/server";
 import { cookies } from "next/headers";
+import { MUTATIONS } from "./db/queries";
 
 const utApi = new UTApi()
+
+export async function createFolder(nname:string, folderId:number, uuserId:string) {
+    const res = await MUTATIONS.createFolder({ folder : {name : nname, parent: folderId}, userId : uuserId})
+    const res2 = JSON.stringify(res)
+    
+    const c = await cookies()
+
+    c.set("force-refresh", JSON.stringify(Math.random()))
+    return res2
+}
 
 export async function deleteFile(fileId : number) {
     const session = await auth()
